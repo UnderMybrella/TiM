@@ -231,6 +231,11 @@ public class TModifiers
 			{
 				Class clazz = params[i];
 				Object tests = TV.get(clazz);
+				if(tests == null)
+				{
+					paramNames[i] = "notSupportedPleaseReport";
+					continue;
+				}
 				for(int j = 0; j < Array.getLength(tests); j++)
 				{
 					LinkedList<Object> parameters = clone(defaultParams);
