@@ -41,6 +41,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
+import net.minecraftforge.oredict.OreDictionary;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -676,6 +677,8 @@ public class TModifiers
 							if(c == ItemStack.class){
 								String itemName = argElem.getAsJsonObject().get("item").getAsString();
 								int damage = obj.has("damage") ? argElem.getAsJsonObject().get("damage").getAsInt() : 0;
+								if(damage < 0)
+									damage = OreDictionary.WILDCARD_VALUE;
 								ItemStack item = new ItemStack((Item.itemRegistry.containsKey(itemName) ? (Item) Item.itemRegistry.getObject(itemName) : (Block.blockRegistry.containsKey(itemName) ? Item.getItemFromBlock((Block) Block.blockRegistry.getObject(itemName)) : Items.apple)), 1, damage);
 								objs.add(item);
 							}
