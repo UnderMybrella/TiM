@@ -35,6 +35,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.StatCollector;
@@ -49,6 +50,7 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartedEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.common.registry.LanguageRegistry;
 
 @Mod(name = TModifiers.NAME, modid = TModifiers.MODID, version = TModifiers.VERSION, dependencies = "required-after:TConstruct")
 public class TModifiers
@@ -105,6 +107,9 @@ public class TModifiers
 			modifierDirectory.mkdir();
 
 		GameRegistry.registerItem(updateChecker, "updateChecker");
+		LanguageRegistry.addName(updateChecker, "Update Checker");
+		
+		CraftingManager.getInstance().addRecipe(new ItemStack(updateChecker), "RRR", "RBR", "RRR", 'R', Items.redstone, 'B', Items.bread);
 	}
 
 	@EventHandler
