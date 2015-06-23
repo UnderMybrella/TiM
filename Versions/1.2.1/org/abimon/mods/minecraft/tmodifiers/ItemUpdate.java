@@ -19,11 +19,13 @@ import net.minecraft.world.World;
 public class ItemUpdate extends Item 
 {
 	public static boolean hasUpdate = false;
+	public static String version = "";
 	
 	@SideOnly(Side.CLIENT)
     public void addInformation(ItemStack p_77624_1_, EntityPlayer p_77624_2_, List list, boolean p_77624_4_) {
 		if(hasUpdate){
 			list.add("Update available!");
+			list.add("The latest version is " + version + " and you have version " + TModifiers.VERSION);
 			list.add("Shift-Right click to open the Curse page in your default browser.");
 		}
 		else
@@ -59,15 +61,15 @@ public class ItemUpdate extends Item
     	}.start();
         return p_77659_1_;
     }
-	
+
+	@SuppressWarnings("resource")
 	public static void checkForUpdate(){
 		try{
 			URL url = new URL("https://raw.githubusercontent.com/UnderMybrella/TiM/master/version.txt");
 			HttpURLConnection con = (HttpURLConnection) url.openConnection();
 			con.connect();
-			@SuppressWarnings("resource")
-			String version = new Scanner(con.getInputStream()).nextLine();
-			if(Float.parseFloat(TModifiers.VERSION) < Float.parseFloat(version))
+			version = new Scanner(con.getInputStream()).nextLine();
+			if(!TModifiers.VERSION.equals(version))
 				hasUpdate = true;
 		}
 		catch(Throwable th){ //We really, really want this in case something stuffs up
