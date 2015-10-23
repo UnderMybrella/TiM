@@ -1,10 +1,7 @@
 package org.abimon.mods.minecraft.tmodifiers.modifiers;
 
-import org.abimon.mods.minecraft.tmodifiers.TModifiers;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
@@ -14,30 +11,26 @@ import tconstruct.library.tools.ToolCore;
 import tconstruct.library.weaponry.IAmmo;
 import tconstruct.modifiers.tools.ModInteger;
 
-public class ModCustomBeheading extends ModTInteger implements TActiveMod {
+public class ModCustomRepair extends ModTInteger implements TActiveMod {
 
-	public ModCustomBeheading(ItemStack[] items, int effect, String dataKey,
-			int increase1, String c, String tip, int max) {
-		super(items, effect, dataKey, increase1, c, tip, max, 999);
-		TModifiers.keyToProperty.put(dataKey, ModProperty.BEHEADING);
+	public ModCustomRepair(ItemStack[] items, int effect, String dataKey,
+			int increase1, String c, String tip) {
+		super(items, effect, dataKey, increase1, c, tip, 1, 999);
 	}
 	
-	public ModCustomBeheading(ItemStack[] items, int effect, String dataKey,
+	public ModCustomRepair(ItemStack[] items, int effect, String dataKey,
 			int increase1, int increase2, String c, String tip) {
 		super(items, effect, dataKey, increase1, increase2, c, tip, 1, 999);
-		TModifiers.keyToProperty.put(dataKey, ModProperty.BEHEADING);
 	}
 	
-	public ModCustomBeheading(ItemStack[] items, int effect, String dataKey,
+	public ModCustomRepair(ItemStack[] items, int effect, String dataKey,
 			int increase1, String c, String tip, int max, int maxApp) {
 		super(items, effect, dataKey, increase1, c, tip, max, maxApp);
-		TModifiers.keyToProperty.put(dataKey, ModProperty.BEHEADING);
 	}
 	
-	public ModCustomBeheading(ItemStack[] items, int effect, String dataKey,
+	public ModCustomRepair(ItemStack[] items, int effect, String dataKey,
 			int increase1, int increase2, String c, String tip, int max, int maxApp) {
 		super(items, effect, dataKey, increase1, increase2, c, tip, max, maxApp);
-		TModifiers.keyToProperty.put(dataKey, ModProperty.BEHEADING);
 	}
 
 	@Override
@@ -46,14 +39,32 @@ public class ModCustomBeheading extends ModTInteger implements TActiveMod {
 		return false;
 	}
 	
-	public void modify (ItemStack[] input, ItemStack tool)
-	{
+	public void modify (ItemStack[] input, ItemStack tool){
 		super.modifyDecrease(input, tool);
 	}
 	
 	public void updateTool (ToolCore tool, NBTTagCompound tags, ItemStack stack, World world, Entity entity)
     {
-
+        if (!world.isRemote && entity instanceof EntityLivingBase && !((EntityLivingBase) entity).isSwingInProgress && stack.getTagCompound() != null)
+        {
+            if (tags.hasKey(key))
+            {
+                int chance = tags.getInteger(key) / max;
+                int check = world.canBlockSeeTheSky((int) entity.posX, (int) entity.posY, (int) entity.posZ) ? 350 : 1150;
+                // REGROWING AMMO :OOoo
+                if(tool instanceof IAmmo && random.nextInt(check*3) < chance) // ammo regenerates at a much slower rate
+                {
+                    IAmmo ammothing = (IAmmo)tool;
+                    if(ammothing.getAmmoCount(stack) > 0) // must have ammo
+                        ammothing.addAmmo(1, stack);
+                }
+                // selfrepairing tool. LAAAAAME
+                else if (random.nextInt(check) < chance)
+                {
+                    AbilityHelper.healTool(stack, 1, (EntityLivingBase) entity, true);
+                }
+            }
+        }
     }
 	
 	public int attackDamage (int modDamage, int currentDamage, ToolCore tool, NBTTagCompound tags, NBTTagCompound toolTags, ItemStack stack, EntityLivingBase player, Entity entity)
@@ -65,16 +76,14 @@ public class ModCustomBeheading extends ModTInteger implements TActiveMod {
 	public int postDamage(int modDamage, int currentDamage, ToolCore tool,
 			NBTTagCompound tags, NBTTagCompound toolTags, ItemStack stack,
 			EntityLivingBase player, Entity entity) {
+		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
 	public int beheadingLevel(LivingDropsEvent event) {
-		EntityPlayer player = (EntityPlayer) event.source.getEntity();
-		ItemStack stack = player.getCurrentEquippedItem();
-		NBTTagCompound nbt = stack.getTagCompound().getCompoundTag("InfiTool");
-		
-		return nbt.getInteger(key) / max;
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 }
