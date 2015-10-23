@@ -2,15 +2,31 @@ package org.abimon.mods.minecraft.tmodifiers;
 
 import tconstruct.library.crafting.ModifyBuilder;
 import tconstruct.library.modifier.ItemModifier;
+
+import java.util.List;
+
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.ChatComponentText;
+import scala.actors.threadpool.Arrays;
 
 public class CommandTModifiers extends CommandBase {
 
 	@Override
 	public String getCommandName() {
 		return "tmodifiers";
+	}
+
+	public List addTabCompletionOptions(ICommandSender p_71516_1_, String[] strings)
+	{
+		if(strings.length == 1)
+			return Arrays.asList(new String[]{"print", "reload"});
+		if(strings.length == 2)
+			if(strings[1].toLowerCase().startsWith("p"))
+				return Arrays.asList(new String[]{"print"});
+			else if(strings[1].toLowerCase().startsWith("r"))
+				return Arrays.asList(new String[]{"reload"});
+		return null;
 	}
 
 	@Override

@@ -115,7 +115,7 @@ public class TModifiers
 	@EventHandler
 	public void preinit(FMLPreInitializationEvent event)
 	{
-		modifierDirectory = new File(event.getSuggestedConfigurationFile().getAbsolutePath().replace(MODID + ".cfg", "Modifiers"));
+		modifierDirectory = new File(event.getSuggestedConfigurationFile().getAbsolutePath().replace(MODID + ".cfg", NAME));
 		if(modifierDirectory.exists())
 			for(File f : modifierDirectory.listFiles())
 				f.delete();
@@ -387,9 +387,25 @@ public class TModifiers
 
 	static{
 
-		TModifiers.keyToProperty.put("Silk Touch", ModProperty.SILK_TOUCH);
+		TModifiers.keyToProperty.put("Flux", ModProperty.FLUX);
 		TModifiers.keyToProperty.put("Lapis", ModProperty.FORTUNE);
+		TModifiers.keyToProperty.put("ModAttack", ModProperty.DAMAGE);
+		TModifiers.keyToProperty.put("Diamond", ModProperty.DURABILITY);
+		TModifiers.keyToProperty.put("Emerald", ModProperty.DURABILITY);
+		TModifiers.keyToProperty.put("Redstone", ModProperty.HASTE);
+		TModifiers.keyToProperty.put("Moss", ModProperty.MOSS);
+		TModifiers.keyToProperty.put("Necrotic", ModProperty.NECROTIC);
+		TModifiers.keyToProperty.put("Beheading", ModProperty.BEHEADING);
+		TModifiers.keyToProperty.put("Blaze", ModProperty.BLAZE);
 		TModifiers.keyToProperty.put("Lava", ModProperty.AUTOSMELT);
+		TModifiers.keyToProperty.put("Tier1Free", ModProperty.EXTRA_MODIFIERS);
+		TModifiers.keyToProperty.put("Tier1.5Free", ModProperty.EXTRA_MODIFIERS);
+		TModifiers.keyToProperty.put("Tier2Free", ModProperty.EXTRA_MODIFIERS);
+		TModifiers.keyToProperty.put("Silk Touch", ModProperty.SILK_TOUCH);
+		TModifiers.keyToProperty.put("Piston", ModProperty.PISTON);
+		TModifiers.keyToProperty.put("ModSmite", ModProperty.DAMAGE);
+		TModifiers.keyToProperty.put("ModAntiSpider", ModProperty.DAMAGE);
+		TModifiers.keyToProperty.put("Reinforced", ModProperty.REINFORCED);
 
 		DV.put(long.class, 0L);
 		DV.put(int.class, 0);
@@ -745,7 +761,7 @@ public class TModifiers
 				+ "\n\t\t\t]"
 				+ "\n\t\t},"
 				+ "\n\t\t\"In an addModifiers array, you're able to add a comment as just a string\","
-				+ "\n\t\t\"With the modifier we just added, we use an incrementing argument number, which corresponds to the position of the value, alternatively you can just use an array called params. These values can be obtained from the Modifers json file generated on startup\""
+				+ "\n\t\t\"With the modifier we just added, we use an incrementing argument number, which corresponds to the position of the value, alternatively you can just use an array called params. These values can be obtained from the Modifers text files generated on startup\""
 				+ "\n\t],");
 		out.println("\t\"addModifierComment\":\"That was the Add Modifiers tag. The Add Modifiers array stores all modifiers to add to the internal registry.\",");
 		out.println("\t\"subModifiers\":["
@@ -762,7 +778,7 @@ public class TModifiers
 				+ "\n\t\t\t]"
 				+ "\n\t\t},"
 				+ "\n\t\t\"In a subModifiers array, you're able to add a comment as just a string\","
-				+ "\n\t\t\"With the modifier we just added, we use an incrementing argument number, which corresponds to the position of the value, alternatively you can just use an array called params. These values can be obtained from the Modifers json file generated on startup\""
+				+ "\n\t\t\"With the modifier we just removed, we use an incrementing argument number, which corresponds to the position of the value, alternatively you can just use an array called params. These values can be obtained from the Modifers text files generated on startup\""
 				+ "\n\t],");
 		out.println("\t\"subModifierComment\":\"That was the Sub Modifiers tag. The Sub Modifiers array stores all modifiers to subtract from the internal registry.\"");
 		out.println("\tmodifierIncompatibilities:{"
@@ -913,7 +929,7 @@ public class TModifiers
 								}
 								if(c == ItemStack.class){
 									String itemName = argElem.getAsJsonObject().get("item").getAsString();
-									int damage = obj.has("damage") ? argElem.getAsJsonObject().get("damage").getAsInt() : 0;
+									int damage = argElem.getAsJsonObject().has("damage") ? argElem.getAsJsonObject().get("damage").getAsInt() : argElem.getAsJsonObject().has("meta") ? argElem.getAsJsonObject().get("meta").getAsInt() : 0;
 									if(damage < 0)
 										damage = OreDictionary.WILDCARD_VALUE;
 									ItemStack item = new ItemStack((Item.itemRegistry.containsKey(itemName) ? (Item) Item.itemRegistry.getObject(itemName) : (Block.blockRegistry.containsKey(itemName) ? Item.getItemFromBlock((Block) Block.blockRegistry.getObject(itemName)) : Items.apple)), 1, damage);

@@ -929,7 +929,7 @@ public class TModifiers
 								}
 								if(c == ItemStack.class){
 									String itemName = argElem.getAsJsonObject().get("item").getAsString();
-									int damage = obj.has("damage") ? argElem.getAsJsonObject().get("damage").getAsInt() : 0;
+									int damage = argElem.getAsJsonObject().has("damage") ? argElem.getAsJsonObject().get("damage").getAsInt() : argElem.getAsJsonObject().has("meta") ? argElem.getAsJsonObject().get("meta").getAsInt() : 0;
 									if(damage < 0)
 										damage = OreDictionary.WILDCARD_VALUE;
 									ItemStack item = new ItemStack((Item.itemRegistry.containsKey(itemName) ? (Item) Item.itemRegistry.getObject(itemName) : (Block.blockRegistry.containsKey(itemName) ? Item.getItemFromBlock((Block) Block.blockRegistry.getObject(itemName)) : Items.apple)), 1, damage);

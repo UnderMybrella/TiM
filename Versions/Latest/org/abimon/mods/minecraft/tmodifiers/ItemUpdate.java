@@ -72,9 +72,7 @@ public class ItemUpdate extends Item
 			if(!TModifiers.VERSION.equals(version))
 				hasUpdate = true;
 		}
-		catch(Throwable th){ //We really, really want this in case something stuffs up
-			th.printStackTrace();
-		}
+		catch(Throwable th){}
 	}
 	
     @SideOnly(Side.CLIENT)
